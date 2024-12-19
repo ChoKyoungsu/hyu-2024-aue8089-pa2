@@ -41,9 +41,20 @@ def undistort_image(img: np.ndarray,
                 b = v - v1
 
                 # [TODO] weighted sum of pixel values in img
+                undistorted_img[y, x] = (
+                    (1 - a) * (1 - b) * img[v1, u1]
+                    + a * (1 - b) * img[v1, u1 + 1]
+                    + (1 - a) * b * img[v1 + 1, u1]
+                    + a * b * img[v1 + 1, u1 + 1]
+                ).astype(img.dtype)
 
             else:
                 # [TODO] nearest neighbor
+                u_nn = round(u)
+                v_nn = round(v)
+
+                if 0 <= u_nn < width and 0 <= v_nn < height:
+                    undistorted_img[y, x] = img[v_nn, u_nn]
 
 
     return undistorted_img
